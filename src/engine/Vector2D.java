@@ -19,13 +19,31 @@ public class Vector2D {
 		return new Vector2D(Math.cos(angle), Math.sin(angle));
 	}
 	
-	public void add(Vector2D other) {
-		this.add(other.getX(), other.getY());
+	public double distance(Vector2D other) {
+		return Math.sqrt((x - other.getX()) * (x - other.getX()) + (y - other.getY()) * (y - other.getY()));
+	}
+	
+	public double dot(Vector2D other) {
+		return x * other.getX() + y * other.getY();
+	}
+	
+	public Vector2D add(Vector2D other) {
+		return add(other.getX(), other.getY());
 	}
 	
 	public Vector2D add(double xIncrement, double yIncrement) {
 		this.x += xIncrement;
 		this.y += yIncrement;
+		return this;
+	}
+	
+	public Vector2D sub(Vector2D other) {
+		return add(other.multiply(-1));
+	}
+	
+	public Vector2D sub(double xIncrement, double yIncrement) {
+		this.x -= xIncrement;
+		this.y -= yIncrement;
 		return this;
 	}
 	
@@ -39,6 +57,11 @@ public class Vector2D {
 		return x * x + y * y;
 	}
 	
+	public double length() {
+		return Math.sqrt(lengthSq());
+	}
+	
+	// overhaul getters and setters (TODO)
 	public void setX(double x) {
 		this.x = x;
 	}
