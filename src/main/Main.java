@@ -56,23 +56,23 @@ public class Main extends GameBase {
 					double massSum = particleA.getMass() + particleB.getMass();
 					Vector2D velocityA = particleA.getVelocity();
 					Vector2D velocityB = particleB.getVelocity();
-					Vector2D velocityDifference = new Vector2D(velocityA).sub(new Vector2D(velocityB)); // overhaul vector caluclations (TODO)
+					Vector2D velocityDifference = velocityA.sub(velocityB);
 					double dotProduct = velocityDifference.dot(impactVector);
 					
 					// calculating new velocity for particle A
-					Vector2D newVelocityA = velocityA.sub(new Vector2D(impactVector).multiply((2 * particleB.getMass() * dotProduct) / (massSum * distanceSq)));
+					Vector2D newVelocityA = velocityA.sub(impactVector.multiply((2 * particleB.getMass() * dotProduct) / (massSum * distanceSq)));
 					particleA.setVelocity(newVelocityA); // add damping factor (TODO)
 					
 					// calculating new velocity for particle B
-					Vector2D newVelocityB = velocityB.add(new Vector2D(impactVector).multiply((2 * particleA.getMass() * dotProduct) / (massSum * distanceSq)));
+					Vector2D newVelocityB = velocityB.add(impactVector.multiply((2 * particleA.getMass() * dotProduct) / (massSum * distanceSq)));
 					particleB.setVelocity(newVelocityB); // add damping factor (TODO)
 					
 					// move particles apart (TODO)
 					double distance = Math.sqrt(distanceSq);
 					double overlap = distance - radiusSum;
-					Vector2D offset = new Vector2D(impactVector).multiply((0.5 * overlap) / distance);
-					particleA.setPosition(particleA.getPosition().sub(new Vector2D(offset)));
-					particleB.setPosition(particleB.getPosition().add(new Vector2D(offset)));
+					Vector2D offset = impactVector.multiply((0.5 * overlap) / distance);
+					particleA.setPosition(particleA.getPosition().sub(offset));
+					particleB.setPosition(particleB.getPosition().add(offset));
 				}
 			}
 		}

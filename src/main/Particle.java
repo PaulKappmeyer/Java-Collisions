@@ -8,7 +8,7 @@ import engine.Vector2D;
 public class Particle {
 
 	private Vector2D position; // center of the particle
-	private Vector2D velocity;
+	private Vector2D velocity; 
 	private Vector2D acceleration;
 
 	private double mass;
@@ -28,10 +28,12 @@ public class Particle {
 	
 	public void update(double tslf) {
 		// update cycle:
-		velocity.add(new Vector2D(acceleration).multiply(tslf)); 	// v = a * dt
+		velocity = velocity.add(acceleration.multiply(tslf)); 		// v = a * dt
+		position = position.add(velocity.multiply(tslf));			// pos += v * dt
+		
+		// update attributes
 		speed = velocity.length();									// speed = |v|
 		kineticEnergy = 0.5 * mass * Math.pow(speed, 2);			// E_kin = 1/2 * m * |v|^2
-		position.add(new Vector2D(velocity).multiply(tslf));		// pos += v * dt
 		
 		// check collisions with walls:
 		boundaryCollisions();
@@ -40,19 +42,19 @@ public class Particle {
 	// make boundaries into objects (TODO)
 	public void boundaryCollisions() {
 		if (position.getX() < radius) {
-			position.setX(radius);
-			velocity.setX(velocity.getX() * -1); // add damping factor (TODO)
+			position = new Vector2D(radius, position.getY());
+			velocity = new Vector2D(-velocity.getX(), velocity.getY()); // add damping factor (TODO)
 		} else if (position.getX() > Main.SCREEN_WIDTH - radius) {
-			position.setX(Main.SCREEN_WIDTH - radius);
-			velocity.setX(velocity.getX() * -1); // add damping factor (TODO)
+			position = new Vector2D(Main.SCREEN_WIDTH - radius, position.getY());
+			velocity = new Vector2D(-velocity.getX(), velocity.getY()); // add damping factor (TODO)
 		}
 		
 		if (position.getY() < radius) {
-			position.setY(radius);
-			velocity.setY(velocity.getY() * -1); // add damping factor (TODO)
+			position = new Vector2D(position.getX(), radius);
+			velocity = new Vector2D(velocity.getX(), -velocity.getY()); // add damping factor (TODO)
 		} else if (position.getY() > Main.SCREEN_HEIGHT - radius) {
-			position.setY(Main.SCREEN_HEIGHT - radius);
-			velocity.setY(velocity.getY() * -1); // add damping factor (TODO)
+			position = new Vector2D(position.getX(), Main.SCREEN_HEIGHT - radius);
+			velocity = new Vector2D(velocity.getX(), -velocity.getY()); // add damping factor (TODO)
 		}
 	}
 	

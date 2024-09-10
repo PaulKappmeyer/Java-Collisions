@@ -1,10 +1,16 @@
 package engine;
 
+/**
+ * The {@code Vector2D} class represents an immutable vector/point in 2D space.
+ * 
+ * @author Paul
+ */
 public class Vector2D {
 
-	private double x;
-	private double y;
+	private final double x;
+	private final double y;
 	
+	// -------------------------- constructors
 	public Vector2D(double x, double y) {
 		this.x = x;
 		this.y = y;
@@ -19,40 +25,30 @@ public class Vector2D {
 		return new Vector2D(Math.cos(angle), Math.sin(angle));
 	}
 	
-	public double distance(Vector2D other) {
-		return Math.sqrt((x - other.getX()) * (x - other.getX()) + (y - other.getY()) * (y - other.getY()));
-	}
-	
-	public double dot(Vector2D other) {
-		return x * other.getX() + y * other.getY();
-	}
-	
+	// -------------------------- addition
 	public Vector2D add(Vector2D other) {
 		return add(other.getX(), other.getY());
 	}
 	
 	public Vector2D add(double xIncrement, double yIncrement) {
-		this.x += xIncrement;
-		this.y += yIncrement;
-		return this;
+		return new Vector2D(x + xIncrement, y + yIncrement);
 	}
 	
+	// -------------------------- subtraction
 	public Vector2D sub(Vector2D other) {
-		return add(other.multiply(-1));
+		return sub(other.getX(), other.getY());
 	}
 	
-	public Vector2D sub(double xIncrement, double yIncrement) {
-		this.x -= xIncrement;
-		this.y -= yIncrement;
-		return this;
+	public Vector2D sub(double xDecrement, double yDecrement) {
+		return new Vector2D(x - xDecrement, y - yDecrement);
 	}
 	
+	// -------------------------- scalar multiplication
 	public Vector2D multiply(double scalar) {
-		this.x *= scalar;
-		this.y *= scalar;
-		return this;
+		return new Vector2D(x * scalar, y * scalar);
 	}
 	
+	// -------------------------- length and distance
 	public double lengthSq() {
 		return x * x + y * y;
 	}
@@ -61,15 +57,16 @@ public class Vector2D {
 		return Math.sqrt(lengthSq());
 	}
 	
-	// overhaul getters and setters (TODO)
-	public void setX(double x) {
-		this.x = x;
+	public double distance(Vector2D other) {
+		return Math.sqrt((x - other.getX()) * (x - other.getX()) + (y - other.getY()) * (y - other.getY()));
 	}
 	
-	public void setY(double y) {
-		this.y = y;
+	// -------------------------- dot product
+	public double dot(Vector2D other) {
+		return x * other.getX() + y * other.getY();
 	}
 	
+	// -------------------------- getters
 	public double getX() {
 		return x;
 	}
