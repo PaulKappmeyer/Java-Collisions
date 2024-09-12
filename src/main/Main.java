@@ -36,7 +36,13 @@ public class Main extends GameBase {
 		// create some obstacles
 		int numWalls = 10;
 		walls = new Wall[numWalls];
-		for (int i = 0; i < numWalls; i++) {
+		// hidden boundary walls
+		walls[0] = new Wall(0, -10, SCREEN_WIDTH, 10);
+		walls[1] = new Wall(SCREEN_WIDTH, 0, 10, SCREEN_HEIGHT);
+		walls[2] = new Wall(0, SCREEN_HEIGHT, SCREEN_WIDTH, 10);
+		walls[3] = new Wall(-10, 0, 10, SCREEN_HEIGHT);
+		// random walls inside view
+		for (int i = 4; i < numWalls; i++) {
 			double xPosition = 0.05 * SCREEN_WIDTH + Math.random() * 0.9 * SCREEN_WIDTH;
 			double yPosition = 0.05 * SCREEN_HEIGHT + Math.random() * 0.9 * SCREEN_HEIGHT;
 			double width = 0.05 * SCREEN_WIDTH + Math.random() * 0.1 * SCREEN_WIDTH;
@@ -91,10 +97,10 @@ public class Main extends GameBase {
 					// change velocity and position of particle
 					Vector2D velocity = particle.getVelocity();
 					if (connection.getX() != 0) {
-						particle.setVelocity(new Vector2D(-velocity.getX(), velocity.getY()));
+						particle.setVelocity(new Vector2D(-velocity.getX(), velocity.getY())); // add damping factor (TODO)
 					}
 					if (connection.getY() != 0) {
-						particle.setVelocity(new Vector2D(velocity.getX(), -velocity.getY()));
+						particle.setVelocity(new Vector2D(velocity.getX(), -velocity.getY())); // add damping factor (TODO)
 					}
 					
 					// move particle out of rectangle (TODO)

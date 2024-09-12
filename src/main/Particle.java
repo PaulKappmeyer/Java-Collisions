@@ -36,28 +36,6 @@ public class Particle {
 		// update attributes
 		speed = velocity.length();									// speed = |v|
 		kineticEnergy = 0.5 * mass * Math.pow(speed, 2);			// E_kin = 1/2 * m * |v|^2
-		
-		// check collisions with walls:
-		boundaryCollisions();
-	}
-	
-	// make boundaries into objects (TODO)
-	public void boundaryCollisions() {
-		if (position.getX() < radius) {
-			position = new Vector2D(radius, position.getY());
-			velocity = new Vector2D(-velocity.getX(), velocity.getY()); // add damping factor (TODO)
-		} else if (position.getX() > Main.SCREEN_WIDTH - radius) {
-			position = new Vector2D(Main.SCREEN_WIDTH - radius, position.getY());
-			velocity = new Vector2D(-velocity.getX(), velocity.getY()); // add damping factor (TODO)
-		}
-		
-		if (position.getY() < radius) {
-			position = new Vector2D(position.getX(), radius);
-			velocity = new Vector2D(velocity.getX(), -velocity.getY()); // add damping factor (TODO)
-		} else if (position.getY() > Main.SCREEN_HEIGHT - radius) {
-			position = new Vector2D(position.getX(), Main.SCREEN_HEIGHT - radius);
-			velocity = new Vector2D(velocity.getX(), -velocity.getY()); // add damping factor (TODO)
-		}
 	}
 	
 	public void draw(Graphics graphics) {
