@@ -47,18 +47,18 @@ public class Main extends GameBase {
 	
 	@Override
 	public void update(double tslf) {
+		// check for wall collisions
+		wallCollisions();
+		
+		// check for particles collisions
+		particleCollisions();
+		
 		// update the particles and kinetic energy of the system
 		kineticEnergySum = 0;
 		for (Particle particle : particles) {
 			particle.update(tslf);
 			kineticEnergySum += particle.getKineticEnergy();
 		}
-		
-		// check for wall collisions
-		wallCollisions();
-		
-		// check for particles collisions
-		particleCollisions();
 	}
 	
 	public void wallCollisions() {

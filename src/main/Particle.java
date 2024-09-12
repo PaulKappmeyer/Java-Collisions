@@ -7,6 +7,8 @@ import engine.Vector2D;
 
 public class Particle {
 
+	private static final boolean SHOW_DIRECTION = true;
+	
 	private Vector2D position; // center of the particle
 	private Vector2D velocity; 
 	private Vector2D acceleration;
@@ -66,6 +68,12 @@ public class Particle {
 		// draw the outline
 		graphics.setColor(Color.BLACK);
 		graphics.drawOval((int) (position.getX() - radius), (int) (position.getY() - radius), (int) (2 * radius), (int) (2 * radius));
+		
+		if (SHOW_DIRECTION) {
+			graphics.setColor(Color.BLACK);
+			Vector2D endPoint = position.add(velocity.multiply(radius/speed));
+			graphics.drawLine((int) position.getX(), (int) position.getY(), (int) endPoint.getX(), (int) endPoint.getY());
+		}
 	}
 	
 	// overhaul getters and setters (TODO)
