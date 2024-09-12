@@ -19,13 +19,15 @@ public class Particle {
 	private double kineticEnergy; // kinetic energy, i.e. 1/2 * mass * speed^2
 	
 	// overhaul constructor (TODO)
-	public Particle(double x, double y) {
+	public Particle(double x, double y, double mass, double radius) {
 		this.position = new Vector2D(x, y);
 		this.velocity = Vector2D.randomDirectionvector().multiply((Math.random() + 1) * 200);
 		this.acceleration = new Vector2D(0, 0);
 		
-		this.mass = 0.01 * (1 + Math.random());
-		this.radius = (float) (Math.sqrt(mass) * 200);
+		this.mass = mass;
+		this.radius = radius;
+		this.speed = velocity.length();
+		this.kineticEnergy = 0.5 * mass * Math.pow(speed, 2);
 	}
 	
 	public void update(double tslf) {

@@ -6,7 +6,8 @@ package engine;
  * @author Paul
  */
 public class Vector2D {
-
+	// consider using java.awt.geom.Point2D.Double (TODO)
+	
 	private final double x;
 	private final double y;
 	

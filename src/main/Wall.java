@@ -6,7 +6,8 @@ import java.awt.Graphics;
 import engine.Vector2D;
 
 public class Wall {
-
+	// consider using java.awt.geom.Rectangle2D.Double (TODO)
+	
 	private final Vector2D position; // top left corner
 	
 	private final double width;
