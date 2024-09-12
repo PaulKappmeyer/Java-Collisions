@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.text.DecimalFormat;
 
 import engine.Vector2D;
 
@@ -9,6 +10,7 @@ public class Particle {
 	// consider using java.awt.geom.Ellipse2D.Double (TODO)
 
 	public static boolean SHOW_DIRECTION = true;
+	public static boolean SHOW_MASS = true;
 	
 	private Vector2D position; // center of the particle
 	private Vector2D velocity; 
@@ -54,6 +56,11 @@ public class Particle {
 			graphics.setColor(Color.BLACK);
 			Vector2D endPoint = position.add(velocity.multiply(radius/speed));
 			graphics.drawLine((int) position.getX(), (int) position.getY(), (int) endPoint.getX(), (int) endPoint.getY());
+		}
+		
+		if (SHOW_MASS) {
+			DecimalFormat df = new DecimalFormat("#.##");
+			graphics.drawString(df.format(mass) + " kg", (int) (position.getX() - 20), (int) (position.getY() + 2.5));
 		}
 	}
 	

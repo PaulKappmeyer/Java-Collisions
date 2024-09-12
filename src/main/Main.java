@@ -12,6 +12,9 @@ public class Main extends GameBase {
 	public static final int SCREEN_WIDTH = 1200;
 	public static final int SCREEN_HEIGHT = 900;
 	
+	public static final boolean SHOW_FPS = true;
+	public static final boolean SHOW_TOTAL_ENERGY = true;
+	
 	private SimulationSystem system;
 	
 	public static void main(String[] args) {
@@ -50,9 +53,13 @@ public class Main extends GameBase {
 		system.draw(graphics);
 		
 		// draw text (fps and kinetic energy)
-		graphics.setColor(Color.BLACK);
-		graphics.drawString("FPS: " + getFPS(), 10, 10);
-		DecimalFormat df = new DecimalFormat("#.#####");
-		graphics.drawString("Energy: " + df.format(system.getKineticEnergySum()), 100, 10);
+		if (SHOW_FPS) {
+			graphics.setColor(Color.BLACK);
+			graphics.drawString("FPS: " + getFPS(), 10, 10);
+		}
+		if (SHOW_TOTAL_ENERGY) {
+			DecimalFormat df = new DecimalFormat("#.#####");
+			graphics.drawString("Energy: " + df.format(system.getKineticEnergySum()), 100, 10);
+		}
 	}
 }

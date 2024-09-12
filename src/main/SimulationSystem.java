@@ -192,8 +192,8 @@ public class SimulationSystem {
 			do {
 				xPosition = xSpawn + Math.random() * widthSpawn;
 				yPosition = ySpawn + Math.random() * heightSpawn;
-				mass = 0.01 * (1 + Math.random());
-				radius = (float) (Math.sqrt(mass) * 200);
+				mass = 10 + Math.random() * 50;
+				radius = (double) (Math.sqrt(mass) * 7);
 			} while (particlePositionOccupied(xPosition, yPosition, radius));
 			Vector2D velocity = Vector2D.randomDirectionvector().multiply((Math.random() + 1) * 200);
 			addParticle(new Particle(xPosition, yPosition, velocity.getX(), velocity.getY(), mass, radius)); // fix overlap in spawn (TODO)
