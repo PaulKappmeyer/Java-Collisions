@@ -16,43 +16,23 @@ public class Main extends GameBase {
 	
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.start("Elastic Collisions", SCREEN_WIDTH, SCREEN_HEIGHT);
+		main.start("Main: testing and experimenting", SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 	
 	@Override
 	public void init() {
-		system = new SimulationSystem(true);
+		system = new SimulationSystem();
+		system.elasticCollisions = true;
+		Particle.SHOW_DIRECTION = false;
 		
 		// add hidden boundary walls
-		system.addWall(new Wall(0, -10, SCREEN_WIDTH, 10));
-		system.addWall(new Wall(SCREEN_WIDTH, 0, 10, SCREEN_HEIGHT));
-		system.addWall(new Wall(0, SCREEN_HEIGHT, SCREEN_WIDTH, 10));
-		system.addWall(new Wall(-10, 0, 10, SCREEN_HEIGHT));
+		system.addBoundaryWalls(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 1);
+		
 		// add random walls
-		int numWalls = 10;
-		for (int i = 0; i < numWalls; i++) {
-			double xPosition, yPosition, width, height;
-			do {
-				xPosition = Math.random() * SCREEN_WIDTH;
-				yPosition = Math.random() * SCREEN_HEIGHT;
-				width = 0.005 * SCREEN_WIDTH + Math.random() * 0.25 * SCREEN_WIDTH;
-				height = 0.005 * SCREEN_WIDTH + Math.random() * 0.25 * SCREEN_WIDTH;
-			} while (system.wallPositionOccupied(xPosition, yPosition, width, height));
-			system.addWall(new Wall(xPosition, yPosition, width, height));
-		}
+		system.spawnWalls(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 10);
 		
 		// add some particles with random positions and random properties
-		int numParticles = 50;
-		for (int i = 0; i < numParticles; i++) {
-			double xPosition, yPosition, mass, radius;
-			do {
-				xPosition = 0.005 * SCREEN_WIDTH + Math.random() * 0.95 * SCREEN_WIDTH;
-				yPosition = 0.005 * SCREEN_HEIGHT + Math.random() * 0.95 * SCREEN_HEIGHT;
-				mass = 0.01 * (1 + Math.random());
-				radius = (float) (Math.sqrt(mass) * 200);
-			} while (system.particlePositionOccupied(xPosition, yPosition, radius));
-			system.addParticle(new Particle(xPosition, yPosition, mass, radius)); // fix overlap in spawn (TODO)
-		}
+		system.spawnParticles(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 50);
 	}
 	
 	@Override

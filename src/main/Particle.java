@@ -6,8 +6,9 @@ import java.awt.Graphics;
 import engine.Vector2D;
 
 public class Particle {
+	// consider using java.awt.geom.Ellipse2D.Double (TODO)
 
-	private static final boolean SHOW_DIRECTION = true;
+	public static boolean SHOW_DIRECTION = true;
 	
 	private Vector2D position; // center of the particle
 	private Vector2D velocity; 
@@ -19,9 +20,9 @@ public class Particle {
 	private double kineticEnergy; // kinetic energy, i.e. 1/2 * mass * speed^2
 	
 	// overhaul constructor (TODO)
-	public Particle(double x, double y, double mass, double radius) {
+	public Particle(double x, double y, double velocityX, double velocityY, double mass, double radius) {
 		this.position = new Vector2D(x, y);
-		this.velocity = Vector2D.randomDirectionvector().multiply((Math.random() + 1) * 200);
+		this.velocity = new Vector2D(velocityX, velocityY);
 		this.acceleration = new Vector2D(0, 0);
 		
 		this.mass = mass;

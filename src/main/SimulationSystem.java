@@ -12,14 +12,13 @@ public class SimulationSystem {
 	private ArrayList<Particle> particles;
 	private double kineticEnergySum;
 	
-	private boolean elasticCollisions; // true means don't use collision damping
+	public boolean elasticCollisions = true; // true means don't use collision damping
 	private final double WALL_COLLISION_DAMPING_FACTOR = 0.98;		// percentage of speed remaining for a particle after a wall collision
 	private final double PARTICLE_COLLISION_DAMPING_FACTOR = 0.99; 	// percentage of speed remaining for both particles after a collision 
 	
 	private boolean running = false;
 	
-	public SimulationSystem(boolean ellasticCollisions) {
-		this.elasticCollisions = ellasticCollisions;
+	public SimulationSystem() {
 		walls = new ArrayList<Wall>();
 		particles = new ArrayList<Particle>();
 	}
@@ -123,6 +122,8 @@ public class SimulationSystem {
 		}
 	}
 	
+	// -------------------------- (TODO) overhaul generation and addtion of elements
+	
 	public void addWall(Wall wall) {
 		walls.add(wall);
 	}
@@ -162,6 +163,46 @@ public class SimulationSystem {
 		return false;
 	}
 	
+	// adds 4 walls around a given rectangle
+	public void addBoundaryWalls(double x, double y, double width, double height, double wallWidth) {
+		addWall(new Wall(x, y - wallWidth, width, wallWidth));
+		addWall(new Wall(x + width, y, wallWidth, height));
+		addWall(new Wall(x, y + height, width, wallWidth));
+		addWall(new Wall(x - wallWidth, y, wallWidth, height));
+	}
+	
+	// adds walls at random positions inside a given rectangular area
+	public void spawnWalls(double xSpawn, double ySpawn, double widthSpawn, double heightSpawn, int numWalls) {
+		for (int i = 0; i < numWalls; i++) {
+			double xPosition, yPosition, width, height;
+			do {
+				xPosition = xSpawn + Math.random() * widthSpawn;
+				yPosition = ySpawn + Math.random() * heightSpawn;
+				width = 10 + Math.random() * 190;
+				height = 10 + Math.random() * 190;
+			} while (wallPositionOccupied(xPosition, yPosition, width, height));
+			addWall(new Wall(xPosition, yPosition, width, height));
+		}
+	}
+	
+	// adds particles at with random properties and positions inside a given rectangular area
+	public void spawnParticles(double xSpawn, double ySpawn, double widthSpawn, double heightSpawn, int numParticles) {
+		for (int i = 0; i < numParticles; i++) {
+			double xPosition, yPosition, mass, radius;
+			do {
+				xPosition = xSpawn + Math.random() * widthSpawn;
+				yPosition = ySpawn + Math.random() * heightSpawn;
+				mass = 0.01 * (1 + Math.random());
+				radius = (float) (Math.sqrt(mass) * 200);
+			} while (particlePositionOccupied(xPosition, yPosition, radius));
+			Vector2D velocity = Vector2D.randomDirectionvector().multiply((Math.random() + 1) * 200);
+			addParticle(new Particle(xPosition, yPosition, velocity.getX(), velocity.getY(), mass, radius)); // fix overlap in spawn (TODO)
+		}
+	}
+	
+	
+	// -------------------------- update
+	
 	private double startTimer; // (TODO) experimental
 	
 	public void update(double tslf) {
@@ -185,6 +226,8 @@ public class SimulationSystem {
 			kineticEnergySum += particle.getKineticEnergy();
 		}
 	}
+	
+	// -------------------------- draw
 	
 	public void draw(Graphics graphics) {
 		// draw the walls
