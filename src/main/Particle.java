@@ -47,7 +47,7 @@ public class Particle {
 		graphics.setColor(Color.BLACK);
 		graphics.drawOval((int) (position.getX() - radius), (int) (position.getY() - radius), (int) (2 * radius), (int) (2 * radius));
 		
-		if (SHOW_DIRECTION) {
+		if (SHOW_DIRECTION && speed > 0) {
 			graphics.setColor(Color.BLACK);
 			Vector2D endPoint = position.add(velocity.multiply(radius/speed));
 			graphics.drawLine((int) position.getX(), (int) position.getY(), (int) endPoint.getX(), (int) endPoint.getY());
