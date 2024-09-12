@@ -77,6 +77,14 @@ public class Particle {
 		this.position = position;
 	}
 	
+	public double getX() {
+		return position.getX();
+	}
+	
+	public double getY() {
+		return position.getY();
+	}
+	
 	public Vector2D getVelocity() {
 		return new Vector2D(velocity);
 	}
