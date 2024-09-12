@@ -17,6 +17,9 @@ public class Main extends GameBase {
 	private Particle[] particles;
 	private double kineticEnergySum;
 	
+	private final double WALL_COLLISION_DAMPING_FACTOR = 0.98;		// percentage of speed remaining for a particle after a wall collision
+	private final double PARTICLE_COLLISION_DAMPING_FACTOR = 0.99; 	// percentage of speed remaining for both particles after a collision 
+	
 	public static void main(String[] args) {
 		Main main = new Main();
 		main.start("Elastic Collisions", SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -73,7 +76,7 @@ public class Main extends GameBase {
 			for (int j = 0; j < walls.length; j++) {
 				Wall wall = walls[j];
 				
-				// figure out the closest point on the edge of the rectangle
+				// figure out the closest point on the edge of the rectangle to the particle
 				double testX = particle.getX(); 
 				double testY = particle.getY();
 				
@@ -93,15 +96,20 @@ public class Main extends GameBase {
 				Vector2D connection = particle.getPosition().sub(closestPoint);
 				double distanceSq = connection.lengthSq();
 				double radius = particle.getRadius();
+				// check if particle intersect with wall (use squared distances to improve performance)
 				if (distanceSq < Math.pow(radius, 2)) {		
 					// change velocity and position of particle
 					Vector2D velocity = particle.getVelocity();
+					double newVelocityX = velocity.getX();
+					double newVelocityY = velocity.getY();
 					if (connection.getX() != 0) {
-						particle.setVelocity(new Vector2D(-velocity.getX(), velocity.getY())); // add damping factor (TODO)
+						newVelocityX *= -1;
 					}
 					if (connection.getY() != 0) {
-						particle.setVelocity(new Vector2D(velocity.getX(), -velocity.getY())); // add damping factor (TODO)
+						newVelocityY *= -1;
 					}
+					Vector2D newVelocity = new Vector2D(newVelocityX, newVelocityY);
+					particle.setVelocity(newVelocity.multiply(WALL_COLLISION_DAMPING_FACTOR)); // optimize handling of damping (TODO)
 					
 					// move particle out of rectangle (TODO)
 					double distance = Math.sqrt(distanceSq);
@@ -116,12 +124,17 @@ public class Main extends GameBase {
 	public void particleCollisions() {
 		for (int i = 0; i < particles.length; i++) {
 			Particle particleA = particles[i];
-			for (int j = i + 1; j < particles.length; j++) {
+			for (int j = i + 1; j < particles.length; j++) { // improve loops, maybe quadtree (TODO)
 				Particle particleB = particles[j];
 				
-				Vector2D impactVector = particleA.getPosition().sub(particleB.getPosition());
+				// get both positions
+				Vector2D positionA = particleA.getPosition();
+				Vector2D positionB = particleB.getPosition();
+				Vector2D impactVector = positionA.sub(positionB);
 				double distanceSq = impactVector.lengthSq();
 				double radiusSum = particleA.getRadius() + particleB.getRadius();
+				
+				// check if particles intersect (use squared distances to improve performance)
 				if (distanceSq < Math.pow(radiusSum, 2)) {
 					// variables for calculating the new velocities
 					double massSum = particleA.getMass() + particleB.getMass();
@@ -132,18 +145,18 @@ public class Main extends GameBase {
 					
 					// calculating new velocity for particle A
 					Vector2D newVelocityA = velocityA.sub(impactVector.multiply((2 * particleB.getMass() * dotProduct) / (massSum * distanceSq)));
-					particleA.setVelocity(newVelocityA); // add damping factor (TODO)
+					particleA.setVelocity(newVelocityA.multiply(PARTICLE_COLLISION_DAMPING_FACTOR)); // optimize handling of damping (TODO)
 					
 					// calculating new velocity for particle B
 					Vector2D newVelocityB = velocityB.add(impactVector.multiply((2 * particleA.getMass() * dotProduct) / (massSum * distanceSq)));
-					particleB.setVelocity(newVelocityB); // add damping factor (TODO)
+					particleB.setVelocity(newVelocityB.multiply(PARTICLE_COLLISION_DAMPING_FACTOR)); // optimize handling of damping (TODO)
 					
 					// move particles apart (TODO)
 					double distance = Math.sqrt(distanceSq);
 					double overlap = distance - radiusSum;
 					Vector2D offset = impactVector.multiply((0.5 * overlap) / distance);
-					particleA.setPosition(particleA.getPosition().sub(offset));
-					particleB.setPosition(particleB.getPosition().add(offset));
+					particleA.setPosition(positionA.sub(offset));
+					particleB.setPosition(positionB.add(offset));
 				}
 			}
 		}
