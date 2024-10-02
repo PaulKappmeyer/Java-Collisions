@@ -2,11 +2,13 @@ package main;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 
 import engine.GameBase;
 
-public class Main extends GameBase {
+public class Main extends GameBase implements KeyListener {
 
 	// size of the window (in pixel)
 	public static final int SCREEN_WIDTH = 1200;
@@ -24,6 +26,8 @@ public class Main extends GameBase {
 	
 	@Override
 	public void init() {
+		window.addKeyListener(this);
+		
 		system = new SimulationSystem();
 		system.elasticCollisions = true;
 		Particle.SHOW_DIRECTION = false;
@@ -60,6 +64,23 @@ public class Main extends GameBase {
 		if (SHOW_TOTAL_ENERGY) {
 			DecimalFormat df = new DecimalFormat("#.#####");
 			graphics.drawString("Energy: " + df.format(system.getKineticEnergySum()), 100, 10);
+		}
+	}
+
+	
+	// -------------------------- keyboard input
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+			system.toggleRunning();
 		}
 	}
 }

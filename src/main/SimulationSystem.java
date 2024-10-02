@@ -202,17 +202,16 @@ public class SimulationSystem {
 	
 	
 	// -------------------------- update
-	
-	private double startTimer; // (TODO) experimental
+	public void toggleRunning() {
+		running = !running;
+	}
 	
 	public void update(double tslf) {
+		// is simulation running?
 		if (running == false) {
-			startTimer += tslf;
-			if (startTimer > 1) {
-				running = true;
-			}
 			return;
 		}
+		
 		// check for wall collisions
 		wallCollisions();
 		
