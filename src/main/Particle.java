@@ -100,4 +100,8 @@ public class Particle {
 	public double getKineticEnergy() {
 		return kineticEnergy;
 	}
+	
+	public double getSpeed() {
+		return speed;
+	}
 }

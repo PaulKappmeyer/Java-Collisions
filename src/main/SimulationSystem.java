@@ -46,10 +46,11 @@ public class SimulationSystem {
 					// change velocity and position of particle
 					Vector2D velocity = particle.getVelocity();
 					Vector2D newVelocity;
+					double distance = Math.sqrt(distanceSq);
 					
 					if (closestPoint.equals(line.getPoint1()) || closestPoint.equals(line.getPoint2())) {
 						// collision with an endpoint (TODO)
-						newVelocity = velocity.multiply(-1);
+						newVelocity = connection.multiply(particle.getSpeed() / distance);
 					} else {
 						// collision with the line surface
 						Vector2D lineNormal = line.getNormal();
@@ -63,7 +64,6 @@ public class SimulationSystem {
 					}
 					
 					// move particle out of rectangle (TODO)
-					double distance = Math.sqrt(distanceSq);
 					if (distance > 0) { // fix case where particle inside rectangle (TODO)
 						particle.setPosition(closestPoint.add(connection.multiply(radius / distance)));
 					}
