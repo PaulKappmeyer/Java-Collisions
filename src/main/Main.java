@@ -34,11 +34,10 @@ public class Main extends GameBase implements KeyListener {
 		Particle.SHOW_MASS = false;
 		
 		// add diagonal line
-		// system.addLine(new Line(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
-		system.addLine(new Line(SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0));
+		system.addLine(new Line(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
 		
-		// add hidden boundary walls
-		system.addBoundaryWalls(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 1);
+		// add hidden boundary lines
+		system.addBoundaryLines(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		
 		// add random walls
 		system.spawnWalls(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 10);

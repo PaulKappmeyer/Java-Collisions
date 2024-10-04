@@ -71,7 +71,8 @@ public class SimulationSystem {
 			}
 		}
 	}
-
+	
+	@SuppressWarnings("unused") // (TODO) consider deleting
 	private void wallCollisions() {
 		for (int i = 0; i < particles.size(); i++) {
 			Particle particle = particles.get(i);
@@ -178,6 +179,7 @@ public class SimulationSystem {
 	
 	public void addWall(Wall wall) {
 		walls.add(wall);
+		addBoundaryLines(wall.getX(), wall.getY(), wall.getWidth(), wall.getHeight());
 	}
 	
 	public void addParticle(Particle particle) {
@@ -195,8 +197,16 @@ public class SimulationSystem {
 				return true;
 			}
 		}
+		
 		for (Wall w : walls) {
 			if (w.getX() <= x + radius && x - radius <= w.getX() + w.getWidth() && w.getY() <= y + radius && y - radius <= w.getY() + w.getHeight()) {
+				return true;
+			}
+		}
+		
+		for (Line l : lines) {
+			Vector2D closestPoint = Line.getClosestPoint(l, position, false);
+			if (Vector2D.distanceSq(closestPoint, position) < Math.pow(radius, 2)) {
 				return true;
 			}
 		}
@@ -213,6 +223,14 @@ public class SimulationSystem {
 			}
 		}
 		return false;
+	}
+	
+	// adds 4 lines around a given rectangle
+	public void addBoundaryLines(double x, double y, double width, double height) {
+		addLine(new Line(x, y, x + width, y));
+		addLine(new Line(x + width, y, x + width, y + height));
+		addLine(new Line(x + width, y + height, x, y + height));
+		addLine(new Line(x, y + height, x, y));
 	}
 	
 	// adds 4 walls around a given rectangle
@@ -286,7 +304,7 @@ public class SimulationSystem {
 		lineCollisions();
 
 		// check for wall collisions
-		wallCollisions();
+		// wallCollisions();
 
 		// check for particles collisions
 		particleCollisions();
