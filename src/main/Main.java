@@ -31,6 +31,11 @@ public class Main extends GameBase implements KeyListener {
 		system = new SimulationSystem();
 		system.elasticCollisions = true;
 		Particle.SHOW_DIRECTION = false;
+		Particle.SHOW_MASS = false;
+		
+		// add diagonal line
+		// system.addLine(new Line(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
+		system.addLine(new Line(SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0));
 		
 		// add hidden boundary walls
 		system.addBoundaryWalls(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 1);

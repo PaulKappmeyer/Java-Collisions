@@ -62,6 +62,10 @@ public class Vector2D {
 		return Math.sqrt((x - other.getX()) * (x - other.getX()) + (y - other.getY()) * (y - other.getY()));
 	}
 	
+	public static double distanceSq(Vector2D v1, Vector2D v2) {
+		return v1.sub(v2).lengthSq();
+	}
+	
 	// -------------------------- dot product
 	public double dot(Vector2D other) {
 		return x * other.getX() + y * other.getY();
@@ -74,5 +78,10 @@ public class Vector2D {
 	
 	public double getY() {
 		return y;
+	}
+	
+	// -------------------------- object methods
+	public boolean equals(Vector2D other) {
+		return Math.abs(this.x - other.getX()) < 10e-16 && Math.abs(this.y - other.getY()) < 10e-16;
 	}
 }

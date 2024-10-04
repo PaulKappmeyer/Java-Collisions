@@ -2,14 +2,15 @@ package main;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.List;
 
 import engine.Vector2D;
 
 public class SimulationSystem {
 
-	private List<Wall> walls;
 	private ArrayList<Particle> particles;
+	private ArrayList<Wall> walls;
+	private ArrayList<Line> lines;
+
 	private double kineticEnergySum;
 	
 	public boolean elasticCollisions = true; // true means don't use collision damping
@@ -21,8 +22,54 @@ public class SimulationSystem {
 	public SimulationSystem() {
 		walls = new ArrayList<Wall>();
 		particles = new ArrayList<Particle>();
+		lines = new ArrayList<Line>();
 	}
 	
+	// -------------------------- (TODO) overhaul collision system
+	private void lineCollisions() {
+		for (int i = 0; i < particles.size(); i++) {
+			Particle particle = particles.get(i);
+			for (int j = 0; j < lines.size(); j++) {
+				Line line = lines.get(j);
+
+				// figure out the closest point on the line to the particle
+				Vector2D position = particle.getPosition();
+				Vector2D closestPoint = Line.getClosestPoint(line, position, false);
+
+				Vector2D connection = position.sub(closestPoint);
+				double distanceSq = connection.lengthSq();
+				double radius = particle.getRadius();
+				// check if particle intersect with wall (use squared distances to improve performance)
+				if (distanceSq < Math.pow(radius, 2)) {
+					// change velocity and position of particle
+					Vector2D velocity = particle.getVelocity();
+					Vector2D newVelocity;
+					
+					if (closestPoint.equals(line.getPoint1()) || closestPoint.equals(line.getPoint2())) {
+						// collision with an endpoint (TODO)
+						newVelocity = velocity.multiply(-1);
+					} else {
+						// collision with the line surface
+						Vector2D lineNormal = line.getNormal();
+						newVelocity = velocity.sub(lineNormal.multiply(2 * velocity.dot(lineNormal) / lineNormal.dot(lineNormal)));
+					} 
+					
+					if (elasticCollisions) {
+						particle.setVelocity(newVelocity);
+					} else {
+						particle.setVelocity(newVelocity.multiply(WALL_COLLISION_DAMPING_FACTOR)); // optimize handling of damping (TODO)
+					}
+					
+					// move particle out of rectangle (TODO)
+					double distance = Math.sqrt(distanceSq);
+					if (distance > 0) { // fix case where particle inside rectangle (TODO)
+						particle.setPosition(closestPoint.add(connection.multiply(radius / distance)));
+					}
+				}
+			}
+		}
+	}
+
 	private void wallCollisions() {
 		for (int i = 0; i < particles.size(); i++) {
 			Particle particle = particles.get(i);
@@ -123,6 +170,9 @@ public class SimulationSystem {
 	}
 	
 	// -------------------------- (TODO) overhaul generation and addtion of elements
+	public void addLine(Line line) {
+		lines.add(line);
+	}
 	
 	public void addWall(Wall wall) {
 		walls.add(wall);
@@ -212,6 +262,9 @@ public class SimulationSystem {
 			return;
 		}
 		
+		// check for line collisions
+		lineCollisions();
+		
 		// check for wall collisions
 		wallCollisions();
 		
@@ -232,6 +285,11 @@ public class SimulationSystem {
 		// draw the walls
 		for (Wall wall : walls) {
 			wall.draw(graphics);
+		}
+		
+		// draw the lines
+		for (Line line : lines) {
+			line.draw(graphics);
 		}
 		
 		// draw the particles
