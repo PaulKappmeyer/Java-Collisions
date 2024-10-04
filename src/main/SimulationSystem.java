@@ -19,6 +19,8 @@ public class SimulationSystem {
 	
 	private boolean running = false;
 	
+	private final int UPDATE_SUBDIVISIONS = 10;
+	
 	public SimulationSystem() {
 		walls = new ArrayList<Wall>();
 		particles = new ArrayList<Particle>();
@@ -262,21 +264,32 @@ public class SimulationSystem {
 			return;
 		}
 		
-		// check for line collisions
-		lineCollisions();
+		// update positions, velocities, accelerations, ... and handle collisions
+		for (int i = 0; i < UPDATE_SUBDIVISIONS; i++) {
+			smallUpdate(tslf / UPDATE_SUBDIVISIONS);
+		}
 		
-		// check for wall collisions
-		wallCollisions();
-		
-		// check for particles collisions
-		particleCollisions();
-		
-		// update the particles and kinetic energy of the system
+		// update the kinetic energy of the system
 		kineticEnergySum = 0;
 		for (Particle particle : particles) {
-			particle.update(tslf);
 			kineticEnergySum += particle.getKineticEnergy();
 		}
+	}
+	
+	private void smallUpdate(double tslf) {
+		// update the particles position and kinetic energy of the system
+		for (Particle particle : particles) {
+			particle.update(tslf);
+		}
+		
+		// check for line collisions
+		lineCollisions();
+
+		// check for wall collisions
+		wallCollisions();
+
+		// check for particles collisions
+		particleCollisions();
 	}
 	
 	// -------------------------- draw
